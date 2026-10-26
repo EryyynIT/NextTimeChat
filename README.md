@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Realtalk
 
-## Getting Started
+A simple multi-room web chat built with Next.js 14 (App Router) and PostgreSQL.
 
-First, run the development server:
+## What it does
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Home page lists existing chat rooms (derived from messages already in the database).
+- Users pick a nickname, join a room from the list, or create a new room at `/create`.
+- Room pages (`/room/[id]`) show the message history and poll the server every 400 ms for new messages (no websockets).
+- Messages are stored in a single `messages` table (`id`, `room`, `name`, `message`).
+- UI text is in Russian.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 14 (App Router, server actions), React 18, TypeScript
+- Tailwind CSS
+- PostgreSQL via the `pg` driver
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running locally
 
-## Learn More
+1. Install dependencies (pnpm is used by the lockfile):
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   pnpm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Provide a PostgreSQL connection. The app creates a `pg` `Client` with no explicit config, so it reads the standard `PGHOST` / `PGPORT` / `PGUSER` / `PGPASSWORD` / `PGDATABASE` environment variables (e.g. put them in `.env.local`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Create the table by hitting the seed route once after the dev server is up:
 
-## Deploy on Vercel
+   ```bash
+   curl http://localhost:3000/seed
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Start the dev server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   pnpm dev
+   ```
+
+   Open http://localhost:3000.
